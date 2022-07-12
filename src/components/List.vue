@@ -33,12 +33,17 @@ export default {
       default: ["tidak ada todo"]
     }
   },
-  methods:{
-    deleteTodo(index){
-      this.$emit("delete-todo", index)
-    },
-    doneTodo(index){
-      this.$emit("done-todo", index)
+  setup(props, {emit}){
+    const deleteTodo = ((index) => {
+      emit("delete-todo", index)
+    })
+
+    const doneTodo = ((index) => {
+      emit("done-todo", index)
+    })
+    return{
+      doneTodo,
+      deleteTodo
     }
   }
 }
