@@ -12,7 +12,7 @@
 						</div>
 					</div>
 					<div> 
-						<list :todos="todos" @delete-todo="deleteTodo" @done-todo="doneTodo"/>
+						<list :todos="list" @delete-todo="deleteTodo" @done-todo="doneTodo"/>
 						<small>Total Todo : {{ countTodo }}</small>
 					</div>
 			</div>
@@ -20,54 +20,63 @@
 	</div>
 </template>
 <script>
+import { ref, reactive, toRefs, onMounted, computed } from "vue";
 import List from "./components/List.vue";
 
 export default{
 	components:{
 		List
 	},
-	data(){
-		return{
-			todo:"",
-			todos:[],
-		}
-	},
-	mounted(){
-		this.todos = JSON.parse(localStorage.getItem("todos"));
-	},
-	computed:{
-		countTodo(){
-			return this.todos.length
-		}
-	},
-	methods:{
-		addTodo(){
-			this.todos.unshift({
-				activity: this.todo,
+	setup(){
+		const todo = ref("");
+		const todos = reactive({
+			list: []
+		});
+
+		onMounted(() => {
+			const items = localStorage.getItem("todos");
+      todos.list = items ? JSON.parse(items) : [];
+		});
+
+		const countTodo = computed(() => {
+			return todos.list.length
+		});
+
+		const addTodo = (() => {
+			todos.list.unshift({
+				activity: todo.value,
 				isDone: false
 			});
-			this.todo = "";
-			this.saveLocalStorage();
-		},
-		deleteTodo(indexTodo){
-			this.todos = this.todos.filter((item, index) => {
+			todo.value = "";
+			saveLocalStorage();
+		})
+
+		const deleteTodo = ((indexTodo) =>{
+			todos.list = todos.list.filter((item, index) => {
 				if(index != indexTodo)
 					return item;
 			});
-			this.saveLocalStorage();
-		},
-		doneTodo(indexTodo){
-			this.todos = this.todos.filter((item, index) => {
+			saveLocalStorage();
+		})
+
+		const doneTodo = ((indexTodo) => {
+			todos.list = todos.list.filter((item, index) => {
 				if(index == indexTodo){
 					item.isDone = true;
 				}
 				return item;
 			});
-			this.saveLocalStorage();
-		},
-		saveLocalStorage(){
-			localStorage.setItem("todos", JSON.stringify(this.todos))
+			saveLocalStorage();
+		})
+
+		const saveLocalStorage = (() => {
+			localStorage.setItem("todos", JSON.stringify(todos.list))
+		})
+
+		return {
+			todo, ...toRefs(todos), countTodo, addTodo, deleteTodo, doneTodo
 		}
+		
 	}
 }
 </script>
