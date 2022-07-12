@@ -1,12 +1,22 @@
-# vue-3-todo
-belajar mengunakan compotion api di vue 3
+## Project setup
+```
+npm install
+```
 
-Install
-npm instal
-
-run app
+### Compiles and hot-reloads for development
+```
 npm run dev
+```
 
-buid
-
+### Compiles and minifies for production
+```
 npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
